@@ -34,6 +34,52 @@ askmain
 }
 
 
+buildmain() {
+echo " buildbe     : main 브랜치의 server 를 빌드합니다. "
+echo "================================"
+
+rm -rf ~/seb40_main_016
+
+space
+
+cd ~
+
+git clone https://github.com/codestates-seb/seb40_main_016.git
+
+cd seb40_main_016/server
+
+chmod +x ./gradlew
+
+space
+
+
+git checkout origin/main
+
+space
+
+echo "checked out to origin/main branch"
+
+./gradlew clean
+
+space
+
+echo "executed gradlew clean"
+
+space
+
+./gradlew build --exclude-task test
+
+space
+
+echo "executed ./gradlew build --exclude-task test"
+
+space
+
+echo "main 브랜치 빌드를 완료하였습니다"
+
+askmain
+
+}
 
 
 
@@ -161,7 +207,7 @@ runserver() {
 echo " runserver   : server 를 백그라운드에서 실행합니다. "
 echo "================================"
 
-nohup java -jar ~/seb40_main_016/server/build/libs/seb40_main_016-01.jar --spring.profiles.active=server &
+nohup java -jar ~/seb40_main_016/server/build/libs/seb40_main_016-0.1.jar --spring.profiles.active=server -Duser.timezone='Asia/Seoul' &
 
 space
 
@@ -174,7 +220,7 @@ runserverlog() {
 echo " runserverlog: server 를 실행합니다. "
 echo "================================"
 
-java -jar ~/seb40_main_016/server/build/libs/seb40_main_016-01.jar --spring.profiles.active=server
+java -jar ~/seb40_main_016/server/build/libs/seb40_main_016-0.1.jar --spring.profiles.active=server -Duser.timezone='Asia/Seoul'
 
 
 
