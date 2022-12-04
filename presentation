@@ -1,0 +1,283 @@
+#! /bin/bash
+
+
+space() {
+# space :  {for test/making this script. Don\'t use this}
+
+echo " "  
+echo "--------------------------------------------" | lolcat
+echo " "
+
+
+}
+
+copyright() {
+echo " copyright   : copyright info about this tui app "
+echo "================================"
+
+echo " copyright is to be reserved by appstew "
+
+askmain
+}
+
+template() {
+
+echo "# 기억해야할 것들: "
+echo "- 현재 실행중인 bash script"
+which $(basename $BASH_SOURCE)
+echo "- 그외"
+which efibootmgr
+# echo "-"
+which idea
+
+askmain
+}
+
+
+buildmain() {
+echo " buildbe     : main 브랜치의 server 를 빌드합니다. "
+echo "================================"
+
+rm -rf ~/seb40_main_016
+
+space
+
+cd ~
+
+git clone https://github.com/codestates-seb/seb40_main_016.git
+
+cd seb40_main_016/server
+
+chmod +x ./gradlew
+
+space
+
+
+git checkout origin/main
+
+space
+
+echo "checked out to origin/main branch"
+
+./gradlew clean
+
+space
+
+echo "executed gradlew clean"
+
+space
+
+./gradlew build --exclude-task test
+
+space
+
+echo "executed ./gradlew build --exclude-task test"
+
+space
+
+echo "main 브랜치 빌드를 완료하였습니다"
+
+askmain
+
+}
+
+
+
+buildbe() {
+echo " buildbe     : be 브랜치의 server 를 빌드합니다. "
+echo "================================"
+
+rm -rf ~/seb40_main_016
+
+space
+
+cd ~
+
+git clone https://github.com/codestates-seb/seb40_main_016.git
+
+cd seb40_main_016/server
+
+chmod +x ./gradlew
+
+space
+
+
+git checkout origin/be
+
+space
+
+echo "checked out to origin/be branch"
+
+./gradlew clean
+
+space
+
+echo "executed gradlew clean"
+
+space
+
+./gradlew build --exclude-task test
+
+space
+
+echo "executed ./gradlew build --exclude-task test"
+
+space
+
+echo "be 브랜치 빌드를 완료하였습니다"
+
+askmain
+
+}
+
+bashRef() {
+echo " bashRef     : url/resources which might be useful to make bash scripts "
+echo "================================"
+arr1=(https://github.com/appstew/shell.scripts https://zetawiki.com/ https://recipes4dev.tistory.com/171)
+
+
+len1=${#arr1[@]}
+
+for ((i=0; i<$len1; i++)) {
+    echo ${arr1[i]}
+}
+
+
+
+askmain
+}
+
+#START PROGRAM
+
+e() {
+echo " e or exit   : 종료 "
+exit 0
+}
+
+askmain() {
+
+echo " "
+echo "================================" 
+        echo "초기 메뉴로 돌아갈까요?(y/n)"
+read -p " : " response
+response=`echo "$response"| tr 'a-zA-Z' 'a-z'`
+    case "$response" in
+        y)
+            main
+            ;;
+        *)
+            echo "종료합니다"
+            exit 0
+            # main
+            ;;
+   esac
+}
+
+check8080() {
+echo " check8080   : 빌드 하기 전 8080포트에 실행중인 자바  프로세스를 확인하고 종료합니다. "
+echo "================================"
+
+ps -aux | grep java
+space
+lsof -i:8080
+
+space
+
+        echo "종료할 pid number 를 입력하거나 메인으로 돌아가하려면 아무 키나 입력하세요. "
+read -p " : " response
+response=`echo "$response"| tr 'a-zA-Z' 'a-z'`
+    case "$response" in
+        [0~9][0~9][0~9][0~9])
+            kill -9 $response
+            echo "excuted kill -9 {pid number}"
+
+            ;;
+        *)
+            askmain
+            # main
+            ;;
+   esac
+
+
+
+askmain
+}
+
+runserver() {
+echo " runserver   : server 를 백그라운드에서 실행합니다. "
+echo "================================"
+
+nohup java -jar ~/seb40_main_016/server/build/libs/seb40_main_016-0.1.jar --spring.profiles.active=server -Duser.timezone='Asia/Seoul' &
+
+space
+
+ps -aux | grep java
+
+askmain
+}
+
+runserverlog() {
+echo " runserverlog: server 를 실행합니다. "
+echo "================================"
+
+java -jar ~/seb40_main_016/server/build/libs/seb40_main_016-0.1.jar --spring.profiles.active=server -Duser.timezone='Asia/Seoul'
+
+
+
+
+askmain
+
+}
+
+main() {
+
+clear
+
+cowsay -f cat CatDog | lolcat
+
+echo "============================================" | lolcat
+echo "|             ** GNU Catdog **             |" | lolcat
+echo "============================================" | lolcat
+echo "| 실행중: $(which $(basename $BASH_SOURCE))                  |" | lolcat
+
+echo "| 명령어를 입력하세요                      |" | lolcat
+
+
+
+arr1=($(declare -F | awk '{print $NF}'))
+
+del02=(askmain intro01 main space template)
+
+for del in ${del02[@]}
+do
+    arr1=("${arr1[@]/$del}")
+done
+
+# declare -p arr1
+
+len1=${#arr1[@]}
+echo "--------------------------------------------" | lolcat
+for ((i=0; i<$len1; i++)) {
+    # if (("${arr1[i]}" != "main")) {
+    #     declare -f "${arr1[i]}" | sed -n '3p' | awk '{sub($1 FS,"")}7'
+    #  declare -f "${arr1[i]}" | sed -n '3p' | awk '{sub($1,"");sub($NF,"")}7' | sed 's/"//'
+    declare -f "${arr1[i]}" | sed -n '3p' | awk '{sub($1,"");sub($NF,"")}7' | sed 's/"//'
+
+}
+echo "--------------------------------------------" | lolcat
+
+# declare -F | awk '{print $NF; exit}'
+
+
+read -p "> " ACTION
+
+echo " "
+echo "| "$ACTION" 실행중 ... |"
+echo " "
+
+"$ACTION"
+
+}
+
+main
+
